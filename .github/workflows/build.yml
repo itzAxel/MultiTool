@@ -47,6 +47,7 @@ jobs:
           onefile: true
 
   publish:
+    needs: build
     strategy:
       fail-fast: true
       matrix:
