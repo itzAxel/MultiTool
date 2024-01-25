@@ -32,13 +32,13 @@ jobs:
           cache: 'pip'
       - name: Read VERSION file
         id: getversion
-        run: echo "::set-output name=version::$(cat VERSION)"
+        run: echo $(cat VERSION) >> $VERSION
       - uses: Nuitka/Nuitka-Action@main
         with:
           nuitka-version: main
           script-name: main.py
           onefile: true
-          output-file: "MultiTool ${{ steps.getversion.outputs.version }}.exe"
+          output-file: "MultiTool ${{ VERSION }}.exe"
       - name: "Upload Artifacts"
         uses: actions/upload-artifact@v3
         with:
