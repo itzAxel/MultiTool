@@ -33,7 +33,7 @@ jobs:
       - name: Load environment variables
         run: |
           cat version >> env.VERSION
-          echo ${{ env.VERSION }}
+          cat ${{ env.VERSION }}
       - uses: Nuitka/Nuitka-Action@main
         with:
           nuitka-version: main
