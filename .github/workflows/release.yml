@@ -37,4 +37,5 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           name: MultiTool v1.1
+          tag: v${{ steps.getversion.outputs.version }}
           path: build/*.exe
