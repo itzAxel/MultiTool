@@ -35,6 +35,7 @@ jobs:
           nuitka-version: main
           script-name: main.py
           onefile: true
+          args: "--output-filename MultiTool v1.1.exe"
       - name: "Upload Artifacts"
         uses: actions/upload-artifact@v3
         with:
