@@ -32,7 +32,7 @@ jobs:
           cache: 'pip'
       - name: Read VERSION file
         id: getversion
-        run: echo "version=1.1" >> "GITHUB_OUTPUT"
+        run: echo "version=1.1" >> "$GITHUB_OUTPUT"
       - name: Print version
         env:
           VERSION: ${{ steps.getversion.outputs.version }}
