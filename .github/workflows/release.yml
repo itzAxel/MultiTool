@@ -1,7 +1,7 @@
 name: Release
 on:
     push:
-        tags: [release]
+        tags: [v*.*]
     workflow_dispatch:
 permissions:
   contents: write
@@ -38,4 +38,4 @@ jobs:
         with:
           name: MultiTool v1.1
           tag: v${{ steps.getversion.outputs.version }}
-          path: build/*.exe
+          artifacts: build/*.exe
