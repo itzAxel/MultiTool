@@ -23,6 +23,7 @@ jobs:
         os: [windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - uses: actions/checkout@v3
       - name: Check dir
         run: dir /s
       - name: Read VERSION file
@@ -32,7 +33,6 @@ jobs:
       - name: Check version
         run: |
           echo ${{ steps.getversion.outputs.version }}
-      - uses: actions/checkout@v3
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
