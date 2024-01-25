@@ -15,23 +15,24 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+      - name: Read VERSION file
+        id: getversion
+        run: |
+          echo "::set-output name=version::$(cat VERSION)"
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
           architecture: 'x64'
           cache: 'pip'
-      - name: Load environment variables
-        uses: dotenv-actions/setup-dotenv@v2
-        with:
-          dotenv_path: .version
       - uses: Nuitka/Nuitka-Action@main
         with:
           nuitka-version: main
           script-name: main.py
           onefile: true
-          product-version: ${{ env.VERSION }}
-          output-file: "MultiTool {VERSION}.exe"
+          file-version: ${{ steps.getversion.outputs.version }}
+          project-version: ${{ steps.getversion.outputs.version }}
+          output-file: "MultiTool v${{ steps.getversion.outputs.version }}.exe"
       - name: "Upload Release"
         uses: ncipollo/release-action@v1
         with:
