@@ -33,6 +33,11 @@ jobs:
           file-version: ${{ steps.getversion.outputs.version }}
           product-version: ${{ steps.getversion.outputs.version }}
           output-file: "MultiTool v${{ steps.getversion.outputs.version }}.exe"
+      - name: "Upload Artifacts"
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ runner.os }} Build
+          path: build/*.exe 
       - name: "Upload Release"
         uses: ncipollo/release-action@v1
         with:
