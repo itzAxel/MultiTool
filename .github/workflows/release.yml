@@ -26,10 +26,6 @@ jobs:
           nuitka-version: main
           script-name: main.py
           onefile: true
-  publish:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: "Upload Release"
         uses: ncipollo/release-action@v1
         with:
