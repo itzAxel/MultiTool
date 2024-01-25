@@ -25,9 +25,12 @@ jobs:
     steps:
       - name: Read VERSION file
         id: getversion
-        run: echo "::set-output name=version::$(cat VERSION)"
+        run: |
+          dir
+          echo "::set-output name=version::$(cat VERSION)"
       - name: Check version
-        run: echo ${{ steps.getversion.outputs.version }}
+        run: |
+          echo ${{ steps.getversion.outputs.version }}
       - uses: actions/checkout@v3
       - name: Setup Python
         uses: actions/setup-python@v4
