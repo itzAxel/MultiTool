@@ -30,7 +30,7 @@ if is_not_admin():
     exit()
 
 
-def help():
+def help() -> None:
     print(f"""
 {Color.PURPLE}Usage:
     {Color.PURPLE}-dism (or dism): {Color.OK}Recovery with DISM (Embedded in SYS) utility (Very Effective, Reload Required, Time:{Color.RED}Long{Color.OK})
