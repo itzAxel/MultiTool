@@ -1,7 +1,7 @@
 name: Release
 on:
     push:
-        tags: [v*.*]
+        tags: [release]
     workflow_dispatch:
 permissions:
   contents: write
@@ -21,12 +21,17 @@ jobs:
           python-version: '3.10'
           architecture: 'x64'
           cache: 'pip'
+      - name: Load environment variables
+        uses: dotenv-actions/setup-dotenv@v2
+        with:
+          dotenv_path: .version
       - uses: Nuitka/Nuitka-Action@main
         with:
           nuitka-version: main
           script-name: main.py
           onefile: true
-          args: '--output-file="MultiTool v1.1.exe"'
+          product-version: ${{ env.VERSION }}
+          output-file: "MultiTool {VERSION}.exe"
       - name: "Upload Release"
         uses: ncipollo/release-action@v1
         with:
