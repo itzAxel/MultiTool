@@ -23,14 +23,15 @@ jobs:
         os: [windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Set the value
-        id: step_one
+      - name: Set Build Output
+        id: set-output
+        run: echo "::set-output name=build-output::${ { env.BUILD_OUTPUT } }"
+        env:
+          BUILD_OUTPUT: "build_success"
+      - name: Use Build Output
         run: |
-          echo "action_state=yellow" >> "$GITHUB_ENV"
-      - name: Use the value
-        id: step_two
-        run: |
-          cat $GITHUB_ENV
+          # Use the output from the previous step
+          echo ${ { steps.set-output.outputs.build-output } }
       - uses: actions/checkout@v3
       - name: Setup Python
         uses: actions/setup-python@v4
