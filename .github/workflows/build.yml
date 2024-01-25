@@ -23,15 +23,11 @@ jobs:
         os: [windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Set Build Output
-        id: set-output
-        run: echo "::set-output name=build-output::${ { env.BUILD_OUTPUT } }"
-        env:
-          BUILD_OUTPUT: "build_success"
-      - name: Use Build Output
-        run: |
-          # Use the output from the previous step
-          echo ${ { steps.set-output.outputs.build-output } }
+      - name: Read VERSION file
+        id: getversion
+        run: echo "::set-output name=version::$(cat VERSION)"
+      - name: Check version
+        run: echo ${{ steps.getversion.outputs.version }}
       - uses: actions/checkout@v3
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -39,9 +35,6 @@ jobs:
           python-version: '3.10'
           architecture: 'x64'
           cache: 'pip'
-      - name: Read VERSION file
-        id: getversion
-        run: echo "version=1.1" >> "$GITHUB_OUTPUT"
       - name: Print version
         env:
           VERSION: ${{ steps.getversion.outputs.version }}
