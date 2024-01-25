@@ -64,12 +64,6 @@ class Command(Enum):
     restart = "shutdown /r"
     ato = "slmgr /ato"
 
-
-class Servers(Enum):
-    kms1 = ""  # Add your own KMS servers
-    kms2 = ""
-
-
 while True:
     match input(f"{Color.PURPLE}Enter command:").lower()[:2]:
         case "-d":
@@ -99,14 +93,26 @@ while True:
                     break
                 print("Undefined version! Try Again")
 
+            while True:
+                with open (file="servers.json", encoding="utf-8") as file:
+                    servers = load(file)
+                print(
+                    f"{Color.PURPLE}Please, enter your KMS server. Your servers (from servers.json): "
+                    f"{''.join(f'{name} ({server}), ' for name, server in servers.items())}".removesuffix(", ")
+                )
+                kms = servers.get(input(f"{Color.PURPLE}KMS server: "), "")
+                if kms:
+                    break
+                print("Undefined server! Try Again")
+
             print(
                 f"{Color.OK}OK!\n"
                 f"{Color.WARN}Please, close dialog windows\n"
                 f"{Color.PURPLE}Key: {key}"
             )
             shell(f"slmgr /ipk {key}", False)
-            print(f"{Color.PURPLE}Activation server: {Color.WARN}{Servers.kms1}")
-            shell(f"slmgr /skms {Servers.kms1}", False)
+            print(f"{Color.PURPLE}Activation server: {Color.WARN}{kms}")
+            shell(f"slmgr /skms {kms}", False)
             print(f"{Color.PURPLE}Trying to activate...")
             shell(Command.ato, False)
             print(f'{Color.OK}Activation procedure complete!')
