@@ -5,6 +5,11 @@ on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: ["main"]
+    paths-ignore:
+      - '.github/*'
+      - '.gitignore'
+      - 'LICENSE'
+      - 'README.md'
   pull_request:
     branches: ["main"]
 
@@ -31,9 +36,9 @@ jobs:
           architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
           cache: 'pip'
 
-      # Build python script into a stand-alone exe
-      - uses: jimkring/python-script-to-exe@v0.2.0
+      - uses: Nuitka/Nuitka-Action@main
         with:
+          nuitka-version: main
           script-name: main.py
           onefile: true
 

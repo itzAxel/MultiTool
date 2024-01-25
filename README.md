@@ -10,7 +10,8 @@ MultiTool this is a tool that can: Activate your OS with your KMS Server, clear 
 > [!NOTE]
 > You must specify the KMS server yourself, In Pre-Compiled .exe file not added KMS servers
 
-If you don't trust me, you can compile the program yourself from source code (main.py)
+> [!TIP]
+> This program is automatically compiled by GitHub, so if wou wanna build it from your sources you can just fork it and commit changes
 
 Usage
 -----
