@@ -23,10 +23,12 @@ jobs:
         os: [windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Check dir
+        run: |
+          dir
       - name: Read VERSION file
         id: getversion
         run: |
-          dir
           echo "::set-output name=version::$(cat VERSION)"
       - name: Check version
         run: |
