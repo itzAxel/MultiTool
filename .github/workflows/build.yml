@@ -32,7 +32,7 @@ jobs:
           cache: 'pip'
       - name: Load environment variables
         run: |
-          cat version >> env.VERSION
+          cat ./version >> env.VERSION
           cat ${{ env.VERSION }}
       - uses: Nuitka/Nuitka-Action@main
         with:
