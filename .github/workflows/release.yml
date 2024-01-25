@@ -31,7 +31,7 @@ jobs:
           script-name: main.py
           onefile: true
           file-version: ${{ steps.getversion.outputs.version }}
-          project-version: ${{ steps.getversion.outputs.version }}
+          product-version: ${{ steps.getversion.outputs.version }}
           output-file: "MultiTool v${{ steps.getversion.outputs.version }}.exe"
       - name: "Upload Release"
         uses: ncipollo/release-action@v1
