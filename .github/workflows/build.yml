@@ -38,8 +38,7 @@ jobs:
           nuitka-version: main
           script-name: main.py
           onefile: true
-          product-version: ${{ steps.getversion.outputs.version }}
-          output-file: "MultiTool {VERSION}.exe"
+          output-file: "MultiTool ${{ env.VERSION }}.exe"
       - name: "Upload Artifacts"
         uses: actions/upload-artifact@v3
         with:
