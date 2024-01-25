@@ -23,6 +23,13 @@ jobs:
         os: [windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Set color
+        id: color-selector
+        run: echo "SELECTED_COLOR=green" >> "$GITHUB_OUTPUT"
+      - name: Get color
+        env:
+          SELECTED_COLOR: ${{ steps.color-selector.outputs.SELECTED_COLOR }}
+        run: echo "The selected color is $SELECTED_COLOR"
       - uses: actions/checkout@v3
       - name: Setup Python
         uses: actions/setup-python@v4
