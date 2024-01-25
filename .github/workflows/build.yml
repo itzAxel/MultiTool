@@ -34,16 +34,13 @@ jobs:
           python-version: '3.10'
           architecture: 'x64'
           cache: 'pip'
-      - name: Print version
-        env:
-          VERSION: ${{ steps.getversion.outputs.version }}
-        run: echo "Version number is $VERSION"
       - uses: Nuitka/Nuitka-Action@main
         with:
           nuitka-version: main
           script-name: main.py
           onefile: true
           file-version: ${{ steps.getversion.outputs.version }}
+          project-version: ${{ steps.getversion.outputs.version }}
           output-file: "MultiTool v${{ steps.getversion.outputs.version }}.exe"
       - name: "Upload Artifacts"
         uses: actions/upload-artifact@v3
