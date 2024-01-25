@@ -41,12 +41,12 @@ jobs:
         os: [ windows-latest ]
 
     runs-on: ${{ matrix.os }}
-    
+
     steps:
       # Uploads artifacts
       - name: "Upload Release"
         uses: ncipollo/release-action@v1
         with:
-          name: MultiTool v*.*
+          name: MultiTool v1.1
           path: |
             build/*.exe
