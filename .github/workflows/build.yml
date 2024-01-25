@@ -24,8 +24,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check dir
-        run: |
-          dir
+        run: dir
       - name: Read VERSION file
         id: getversion
         run: |
