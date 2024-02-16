@@ -1,15 +1,18 @@
 from ctypes import windll
 from enum import Enum
-from json import load
-from os import system, getuid, listdir, remove, getlogin
+import os
+from os import system, listdir, remove, getlogin
 from os.path import isfile, isdir, join
 from shutil import rmtree
 from subprocess import call
-
+from requests import get
+from json import load
+import codecs
+from bs4 import BeautifulSoup
 system("")  # Init colors
 
 
-class Color(Enum):  # Color codes
+class Color:  # Color codes
     PURPLE = '\033[35m'
     OK = '\033[32m'  # Green
     CYAN = '\033[96m'
@@ -19,16 +22,14 @@ class Color(Enum):  # Color codes
 
 def is_not_admin() -> bool:
     try:
-        return bool(getuid())
+        return bool(os.getuid())
     except AttributeError:
         return not windll.shell32.IsUserAnAdmin()
-
 
 if is_not_admin():
     print(f"{Color.RED}[!]ERROR: {Color.WARN}Program launched without admin permissions")
     input(f"{Color.WARN}Press ENTER to exit...")
     exit()
-
 
 def help() -> None:
     print(f"""
@@ -41,13 +42,51 @@ def help() -> None:
     """)
 
 
-with open(file="keys.json", encoding="utf-8") as file:
-    keys = load(file)
 
+def download(file) -> bool :
+    print(f"{Color.OK}Automatic download started")
+    try:
+        if file:
+            file_url = "https://raw.githubusercontent.com/itzAxel/MultiTool/main/keys.json"
+            name = "keys"
+        else:
+            file_url = "https://raw.githubusercontent.com/itzAxel/MultiTool/main/servers.json"
+            name = "servers"
+        file_data = str(BeautifulSoup(get(file_url).text, "html.parser"))
+        file=codecs.open(f"{name}.json","w","utf-8")
+        file.write(file_data)
+        file.close()
+        print(f"{Color.OK}Automatic download complete")
+        return True
+    except Exception as e:
+        print(f'{Color.RED}[!]ERROR: {Color.WARN}{e}')
+        return False
+
+if isfile("./keys.json"):
+    with open(file="keys.json", encoding="utf-8") as file:
+        keys = load(file)
+else:
+    res = input(f'{Color.RED}[!]ERROR:{Color.WARN}"keys.json" {Color.RED}not{Color.WARN} found, download automatically? (y/n)')
+    if res == "y":
+      if download(True):
+        with open(file="keys.json", encoding="utf-8") as file:
+            keys = load(file)
+      else:
+          print(f"{Color.RED}Error occurred while downloading file")
+    else:
+          print(f"{Color.RED}WARNING:{Color.WARN}Please don't use activation command")
+
+if not isfile("./servers.json"):
+    res = input(f'{Color.RED}[!]ERROR:{Color.WARN}"servers.json" {Color.RED}not{Color.WARN} found, download automatically? (y/n)')
+    if res == "y":
+        if not download(False):
+          print(f"{Color.RED}Error occured while downloading file")
+        print(f"{Color.RED}WARNING:{Color.WARN}Please specify the KMS server")
+    else:
+        print(f"{Color.RED}WARNING:{Color.WARN}Please don't use activation command")
 
 print(f"{Color.OK}Successful Start!")
 help()
-
 
 def shell(comm, shell_type) -> int | str:
     if shell_type:
