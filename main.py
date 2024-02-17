@@ -97,7 +97,7 @@ def shell(comm, shell_type) -> int | str:
         return f"{Color.RED}ERROR!: {Color.WARN}{e}"
 
 
-class Command(Enum):
+class Command:
     sfc = "sfc /scannow"
     dism = "DISM /Online /Cleanup-Image /RestoreHealth"
     restart = "shutdown /r"
