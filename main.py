@@ -9,6 +9,7 @@ from requests import get
 from json import load
 import codecs
 from bs4 import BeautifulSoup
+from cryptography.fernet import Fernet
 system("")  # Init colors
 
 
@@ -39,6 +40,7 @@ def help() -> None:
     {Color.PURPLE}-activate (or activate):{Color.OK} Activate your OS with KMS server
     {Color.PURPLE}-help (or help):{Color.OK} Print this menu
     {Color.PURPLE}-clear (or clear):{Color.OK} Clear %TEMP% Folder ({Color.WARN}Please, be careful while using this command!{Color.OK})
+    {Color.PURPLE}-crypt (or crypt):{Color.OK}Encrypt/Decrypt file or string and save key in file
     """)
 
 
@@ -104,14 +106,14 @@ class Command:
     ato = "slmgr /ato"
 
 while True:
-    match input(f"{Color.PURPLE}Enter command:").lower()[:2]:
-        case "-d":
+    match input(f"{Color.PURPLE}Enter command:").lower()[:3]:
+        case "-di":
             shell(Command.dism, True)
 
-        case "-s":
+        case "-sf":
             shell(Command.sfc, True)
 
-        case "-a":
+        case "-ac":
             print(
                 f"{Color.PURPLE}Please, enter your Windows version. Supported versions: "
                 f"{''.join(f'Windows {version}, ' for version in keys.keys())}".removesuffix(", ")
@@ -156,10 +158,10 @@ while True:
             shell(Command.ato, False)
             print(f'{Color.OK}Activation procedure complete!')
 
-        case "-h":
+        case "-he":
             help()
 
-        case "-c":
+        case "-cl":
             temp_folder = fr'C:\Users\{getlogin()}\AppData\Local\Temp'
             print(f"{Color.PURPLE}Directory:{temp_folder}")
             contents = listdir(temp_folder)
@@ -177,5 +179,91 @@ while True:
                     print(f"{Color.RED}Error occurred while deleting {item_path}:{Color.WARN} {e}")
             print(f"{Color.PURPLE}Procedure Complete")
 
+        case "-cr":
+            print(f"""
+{Color.PURPLE}Please select operation:
+    1-Decrypt
+    2-Encrypt
+            """)
+            op = input("Operation (Number):")
+            print("""
+Please select type of data:
+    1-File
+    2-Text
+            """)
+            type = input("Type (Number):")
+            if op=="2":
+                if input("Use existing key?(y/n)")=="y":
+                    name=input("Please enter .key file name (Only name):")
+                    key = open(f"{name}.key", "rb").read()
+                    f = Fernet(key)
+                else:
+                    name = input("Please enter .key file name (Only name):")
+                    print("Generating key...")
+                    key = Fernet.generate_key()
+                    f = Fernet(key)
+                    with open(f"{name}.key", "wb") as key_file:
+                        key_file.write(key)
+                    print(f"{Color.OK}Encrypt Key Successfully generated and saved as file '{name}.key' ")
+
+                if type=="1":
+                    file_name = input(f"{Color.PURPLE}Please enter file name (format: file.txt):")
+                    try:
+                        with open(file_name, "rb") as file:
+                            file_data = file.read()
+                        encrypted_data = f.encrypt(file_data)
+                        with open(file_name, "wb") as file:
+                            file.write(encrypted_data)
+                        print(f"{Color.OK}File Successfully Encrypted")
+                    except Exception as e:
+                        print(f'{Color.RED}[!]ERROR: {Color.WARN}{e}')
+                        continue
+                if type=="2":
+                    text = input(f"{Color.PURPLE}Please enter string to encrypt:").encode()
+                    enc_file_name = input(f"{Color.PURPLE}Please enter file name where will be saved text:")
+                    try:
+                        encrypted_data = f.encrypt(text)
+                        with open(f"{enc_file_name}.txt", "wb") as file:
+                            file.write(encrypted_data)
+                        print(f"{Color.OK}Text Successfully Encrypted")
+                    except Exception as e:
+                        print(f'{Color.RED}[!]ERROR: {Color.WARN}{e}')
+                        continue
+
+            if op=="1":
+                name=input("Please enter .key file name (Only name):")
+                print("Importing key...")
+                try:
+                    key = open(f"{name}.key", "rb").read()
+                    f = Fernet(key)
+                except Exception as e:
+                    print(f'{Color.RED}[!]ERROR: {Color.WARN}{e}')
+                    continue
+                print(f"{Color.OK}Decrypt Key Successfully imported ")
+
+                if type=="1":
+                    file_name = input(f"{Color.PURPLE}Please enter file name (format: file.txt):")
+                    try:
+                        with open(file_name, "rb") as file:
+                            file_data = file.read()
+                        decrypted_data = f.decrypt(file_data)
+                        with open(file_name, "wb") as file:
+                            file.write(decrypted_data)
+                        print(f"{Color.OK}File Successfully Decrypted")
+                    except Exception as e:
+                        print(f'{Color.RED}[!]ERROR: {Color.WARN}{e}')
+                        continue
+                if type=="2":
+                    text = input(f"{Color.PURPLE}Please enter string to encrypt:")
+                    enc_file_name = input(f"{Color.PURPLE}Please enter file name where will be saved text:")
+                    try:
+                        decrypted_data = f.decrypt(text)
+                        with open(f"{enc_file_name}.txt", "w") as file:
+                            file.write(decrypted_data.decode())
+                        print(f"{Color.OK}Text Successfully Decrypted")
+                        print(f"{Color.PURPLE}Decrypted text:{decrypted_data}")
+                    except Exception as e:
+                        print(f'{Color.RED}[!]ERROR: {Color.WARN}{e}')
+                        continue
         case _:
             print(f"{Color.RED}[!]ERROR: {Color.WARN}Undefined command!")
