@@ -40,10 +40,17 @@ def help() -> None:
     {Color.PURPLE}-activate (or activate):{Color.OK} Activate your OS with KMS server
     {Color.PURPLE}-help (or help):{Color.OK} Print this menu
     {Color.PURPLE}-clear (or clear):{Color.OK} Clear %TEMP% Folder ({Color.WARN}Please, be careful while using this command!{Color.OK})
-    {Color.PURPLE}-crypt (or crypt):{Color.OK}Encrypt/Decrypt file or string and save key in file
+    {Color.PURPLE}-crypt (or crypt):{Color.OK} Encrypt/Decrypt file or string and save key in file
+    {Color.PURPLE}-about (or about):{Color.OK} About this program
     """)
 
-
+def about() -> None:
+    print(f"""
+{Color.PURPLE}About:
+    {Color.PURPLE}MultiTool, version: 1.2.1 {Color.OK}Stable 
+    {Color.PURPLE}Author, main creator: ItzAxel, Special Thanks for: NikSne
+    {Color.PURPLE}Project on GitHub: https://github.com/itzAxel/MultiTool
+    """)
 
 def download(file) -> bool :
     print(f"{Color.OK}Automatic download started")
@@ -254,7 +261,7 @@ Please select type of data:
                         print(f'{Color.RED}[!]ERROR: {Color.WARN}{e}')
                         continue
                 if type=="2":
-                    text = input(f"{Color.PURPLE}Please enter string to encrypt:")
+                    text = input(f"{Color.PURPLE}Please enter string to decrypt:")
                     enc_file_name = input(f"{Color.PURPLE}Please enter file name where will be saved text:")
                     try:
                         decrypted_data = f.decrypt(text)
@@ -265,5 +272,9 @@ Please select type of data:
                     except Exception as e:
                         print(f'{Color.RED}[!]ERROR: {Color.WARN}{e}')
                         continue
+
+        case "-ab":
+            about()
+
         case _:
             print(f"{Color.RED}[!]ERROR: {Color.WARN}Undefined command!")
