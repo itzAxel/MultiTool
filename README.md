@@ -1,7 +1,8 @@
 # MultiTool
 MultiTool is a tool that can activate your OS with your KMS Server, clear temporary files and etc
 
-![image](https://github.com/itzAxel/MultiTool/assets/115724412/fc2c1764-a7d6-483b-9301-414f751e6db7)
+![image](https://github.com/itzAxel/MultiTool/assets/115724412/5a2ce730-42af-4656-9706-7fc0a0951699)
+
 > [!WARNING] 
 > **Windows Defender may respond MultiTool.exe as virus "wacatac"**
 
