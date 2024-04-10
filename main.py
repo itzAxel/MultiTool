@@ -1,5 +1,4 @@
 from ctypes import windll
-from enum import Enum
 import os
 from os import system, listdir, remove, getlogin
 from os.path import isfile, isdir, join
@@ -12,6 +11,8 @@ from bs4 import BeautifulSoup
 from cryptography.fernet import Fernet
 system("")  # Init colors
 
+res = "y"
+res1 = "y"
 
 class Color:  # Color codes
     PURPLE = '\033[35m'
@@ -28,28 +29,50 @@ def is_not_admin() -> bool:
         return not windll.shell32.IsUserAnAdmin()
 
 if is_not_admin():
-    print(f"{Color.RED}[!]ERROR: {Color.WARN}Program launched without admin permissions")
-    input(f"{Color.WARN}Press ENTER to exit...")
-    exit()
+    print(f"{Color.RED}[!]WARNING:"
+          f"{Color.WARN}Program launched without admin permissions ,"
+          f"you can still use program ,but some functions are disabled")
+
+    status = False
+    help_status = f"{Color.RED}Inactive"
+    help_status2 = f"{Color.WARN}Active , but may be problems"
+else:
+    status = True
+    help_status = f"{Color.OK}Active"
+    help_status2 = f"{Color.OK}Active"
+
 
 def help() -> None:
     print(f"""
 {Color.PURPLE}Usage:
-    {Color.PURPLE}-dism (or dism): {Color.OK}Recovery with DISM (Embedded in SYS) utility (Very Effective, Reload Required, Time:{Color.RED}Long{Color.OK})
-    {Color.PURPLE}-sfc (or sfc):{Color.OK} Recovery with SFC (Embedded in SYS) (Effective, Reload required, Time:{Color.WARN}Medium{Color.OK})
-    {Color.PURPLE}-activate (or activate):{Color.OK} Activate your OS with KMS server
-    {Color.PURPLE}-help (or help):{Color.OK} Print this menu
-    {Color.PURPLE}-clear (or clear):{Color.OK} Clear %TEMP% Folder ({Color.WARN}Please, be careful while using this command!{Color.OK})
-    {Color.PURPLE}-crypt (or crypt):{Color.OK} Encrypt/Decrypt file or string and save key in file
-    {Color.PURPLE}-about (or about):{Color.OK} About this program
+    {Color.PURPLE}-dism: {Color.OK}Recovery with DISM utility (Very Effective, Reload Required, Time:{Color.RED}Long{Color.OK}) ,Status:{help_status}
+    {Color.PURPLE}-sfc:{Color.OK} Recovery with SFC (Effective, Reload required, Time:{Color.WARN}Medium{Color.OK}) ,Status:{help_status}
+    {Color.PURPLE}-activate:{Color.OK} Activate your OS with KMS server , Status:{help_status}
+    {Color.PURPLE}-help:{Color.OK} Print this menu , Status:{Color.OK}Always active
+    {Color.PURPLE}-clear:{Color.OK} Clear %TEMP% Folder ({Color.WARN}Please, be careful while using this command!{Color.OK}) , Status:{help_status2}
+    {Color.PURPLE}-crypt:{Color.OK} Encrypt/Decrypt file or string and save key in file , Status:{help_status2}
+    {Color.PURPLE}-tip:{Color.OK} tips and help ,Status:{Color.OK}Always active
+    {Color.PURPLE}-about:{Color.OK} About this program ,Status:{Color.OK}Always active
     """)
 
 def about() -> None:
     print(f"""
 {Color.PURPLE}About:
-    {Color.PURPLE}MultiTool, version: 1.2.1 {Color.OK}Stable 
+    {Color.PURPLE}MultiTool, version: 1.3.0 {Color.OK}Stable
     {Color.PURPLE}Author, main creator: ItzAxel, Special Thanks for: NikSne
     {Color.PURPLE}Project on GitHub: https://github.com/itzAxel/MultiTool
+    """)
+
+def tip() -> None:
+    print(f"""
+{Color.OK}[?]Tips:
+    {Color.RED}Automatic download fails:{Color.PURPLE}
+                1)Check internet connection and try again
+                2)Or you can try download it manually from https://github.com/itzAxel/MultiTool
+    {Color.RED}Activation commands don't work:{Color.PURPLE}
+                1)Check "server.json" file , if it doesn't contain servers add it with Sublime Text or Notepad++
+                2)Check internet connection
+                3)Try restart program with admin permissions
     """)
 
 def download(file) -> bool :
@@ -75,24 +98,23 @@ if isfile("./keys.json"):
     with open(file="keys.json", encoding="utf-8") as file:
         keys = load(file)
 else:
-    res = input(f'{Color.RED}[!]ERROR:{Color.WARN}"keys.json" {Color.RED}not{Color.WARN} found, download automatically? (y/n)')
+    res = input(f'{Color.RED}[!]ERROR:{Color.WARN}"keys.json" {Color.RED}not{Color.WARN} found, '
+                f'download automatically? (y/n)')
     if res == "y":
       if download(True):
         with open(file="keys.json", encoding="utf-8") as file:
             keys = load(file)
-      else:
-          print(f"{Color.RED}Error occurred while downloading file")
-    else:
-          print(f"{Color.RED}WARNING:{Color.WARN}Please don't use activation command")
 
 if not isfile("./servers.json"):
-    res = input(f'{Color.RED}[!]ERROR:{Color.WARN}"servers.json" {Color.RED}not{Color.WARN} found, download automatically? (y/n)')
-    if res == "y":
-        if not download(False):
-          print(f"{Color.RED}Error occured while downloading file")
-        print(f"{Color.RED}WARNING:{Color.WARN}Please specify the KMS server")
-    else:
-        print(f"{Color.RED}WARNING:{Color.WARN}Please don't use activation command")
+    res1 = input(f'{Color.RED}[!]ERROR:{Color.WARN}"servers.json" {Color.RED}not{Color.WARN} found, download automatically? (y/n)')
+    if res1 == "y":
+        if download(False):
+            print(f"{Color.RED}[!]WARNING:{Color.WARN}Please specify the KMS server")
+
+
+if res != "y" or res1 !="y":
+        print(f"{Color.RED}[!]WARNING:{Color.WARN}Please don't use activation command")
+
 
 print(f"{Color.OK}Successful Start!")
 help()
@@ -105,6 +127,9 @@ def shell(comm, shell_type) -> int | str:
     except Exception as e:
         return f"{Color.RED}ERROR!: {Color.WARN}{e}"
 
+def comm_in() -> None:
+    print(f'{Color.RED}[!]ERROR:{Color.WARN}Command are inactive')
+    print(f'{Color.OK}[?]Tip:{Color.WARN}Try to restart program with admin permissions')
 
 class Command:
     sfc = "sfc /scannow"
@@ -115,12 +140,21 @@ class Command:
 while True:
     match input(f"{Color.PURPLE}Enter command:").lower()[:3]:
         case "-di":
+            if not (status):
+                comm_in()
+                continue
             shell(Command.dism, True)
 
         case "-sf":
+            if not (status):
+                comm_in()
+                continue
             shell(Command.sfc, True)
 
         case "-ac":
+            if not (status):
+                comm_in()
+                continue
             print(
                 f"{Color.PURPLE}Please, enter your Windows version. Supported versions: "
                 f"{''.join(f'Windows {version}, ' for version in keys.keys())}".removesuffix(", ")
@@ -167,6 +201,9 @@ while True:
 
         case "-he":
             help()
+
+        case "-ti":
+            tip()
 
         case "-cl":
             temp_folder = fr'C:\Users\{getlogin()}\AppData\Local\Temp'
